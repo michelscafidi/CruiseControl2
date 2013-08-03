@@ -35,7 +35,43 @@ namespace CruiseControl
 				if (!vessel.CounterMeasuresLoaded && vessel.CounterMeasures > 0)
 				{
 					cmds.Add(new Command { vesselid = vessel.Id, action = "load_countermeasures" });
-					_log[_log.Count()] = "deploy CM for " + vessel.Id;
+				}
+			}
+
+			if (_currentBoard.TurnsUntilBoardShrink == 1)
+			{
+				foreach (var vessel in _myVessels)
+				{
+					bool doneX = false, doneY = false;
+					foreach (var location in vessel.Location)
+					{
+						if (!doneX)
+						{
+							if (location.X == _currentBoard.BoardMinCoordinate.X)
+							{
+								cmds.Add(new Command { vesselid = vessel.Id, action = "move:east" });
+								doneX = true;
+							}
+							if (location.X == _currentBoard.BoardMaxCoordinate.X)
+							{
+								cmds.Add(new Command { vesselid = vessel.Id, action = "move:west" });
+								doneX = true;
+							}
+						}
+						if (!doneY)
+						{
+							if (location.Y == _currentBoard.BoardMinCoordinate.Y)
+							{
+								cmds.Add(new Command { vesselid = vessel.Id, action = "move:south" });
+								doneY = true;
+							}
+							if (location.Y == _currentBoard.BoardMaxCoordinate.Y)
+							{
+								cmds.Add(new Command { vesselid = vessel.Id, action = "move:north" });
+								doneY = true;
+							}
+						}
+					}
 				}
 			}
 
