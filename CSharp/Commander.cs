@@ -24,7 +24,20 @@ namespace CruiseControl
         {
             var cmds = new List<Command>();
 			//comment
-			
+
+			foreach (var vesselStatus in _currentBoard.MyVesselStatuses)
+			{
+				_myVessels.Add(vesselStatus);
+			}
+
+			foreach (var vessel in _myVessels)
+			{
+				if (!vessel.CounterMeasuresLoaded && vessel.CounterMeasures > 0)
+				{
+					cmds.Add(new Command { vesselid = vessel.Id, action = "load_countermeasures" });
+					_log[_log.Count()] = "deploy CM for " + vessel.Id;
+				}
+			}
 
 
 
